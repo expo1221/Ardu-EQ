@@ -12,9 +12,10 @@ const float stepsPerRevolution = worm_gear_num*360.0*gamsokbi/anglePerSteps; // 
 const int speed_1 = 1000; //빨리 했을 때, 1000ms 당 개의 신호를 보낸다는 뜻 (루프가 60ms넘게 걸리기 때문에 80이상으로 해야 안전함)
 const int speed_2 = 2000; //느리게 했을 때, 2000ms 당 개의 신호를 보낸다는 뜻
 const int speed_earth = 299; // (int)(24*3600*1000/stepsPerRevolution); //지구의 자전에 의한 속도, int 형을 사용함에 따른 오차를 나중에 고려해야 한다//24시간-4분
+const int NUM=150;
 int speed_now_1;
 int speed_now_2;
-int now1 = 0, previous1 = 0, now2 = 0, previous2 = 0;
+long now1 = 0, previous1 = 0, now2 = 0, previous2 = 0;
 long timenow;
 int a[4] = {}, an1 = 0, an2 = 0;
 long start_time_moter1;
@@ -77,11 +78,11 @@ else Serial.println("\"no switch is on (moter 2)\"");
 }
 void f(int mode1, int mode2)
 {
-int time_flow_1 = millis() - start_time_moter1;
+long time_flow_1 = millis() - start_time_moter1;
 time_flow_1 = time_flow_1/500;
 if(time_flow_1 > 3) time_flow_1 = 3;
 speed_now_1 = 4 - time_flow_1;
-int time_flow_2 = millis() - start_time_moter2;
+long time_flow_2 = millis() - start_time_moter2;
 time_flow_2 = time_flow_2/500;
 if(time_flow_2 > 3) time_flow_2 = 3;
 speed_now_2 = 4 - time_flow_2;
@@ -90,7 +91,7 @@ if(mode1 == 1 || mode1 == 2)
 if(mode2 == 3 || mode2 == 4)
 {
 
-for(int i = 1 ; i <= 100; i++)
+for(int i = 1 ; i <= NUM; i++)
 {
 if(i % speed_now_1 == 0 ) digitalWrite(Clock_1, 1), digitalWrite(Clock_1, 0);
 if(i % speed_now_2 == 0 ) digitalWrite(Clock_2, 1), digitalWrite(Clock_2, 0);
@@ -100,7 +101,7 @@ delay(1);
 }
 else
 {
-for(int i = 1 ; i <= 100; i++)
+for(int i = 1 ; i <= NUM; i++)
 {
 if(i % speed_now_1 == 0 ) digitalWrite(Clock_1, 1), digitalWrite(Clock_1, 0);
 if(i % speed_now_2 == 0 ) digitalWrite(Clock_2, 0), digitalWrite(Clock_2, 0);
@@ -121,7 +122,7 @@ delay(1);
 if(mode2 == 3 || mode2 == 4)
 {
 
-for(int i = 1 ; i <= 100; i++)
+for(int i = 1 ; i <= NUM; i++)
 {
 if(i % speed_now_1 == 0 ) digitalWrite(Clock_1, 0), digitalWrite(Clock_1, 0);
 if(i % speed_now_2 == 0 ) digitalWrite(Clock_2, 1), digitalWrite(Clock_2, 0);
@@ -131,7 +132,7 @@ delay(1);
 }
 else
 {
-for(int i = 1 ; i <= 100; i++)
+for(int i = 1 ; i <= NUM; i++)
 {
 if(i % speed_now_1 == 0 ) digitalWrite(Clock_1, 0), digitalWrite(Clock_1, 0);
 if(i % speed_now_2 == 0 ) digitalWrite(Clock_2, 0), digitalWrite(Clock_2, 0);
@@ -143,7 +144,7 @@ delay(1);
 }
 void loop()
 {
-Serial.println(millis());
+//Serial.println(millis());
 //while(millis() < timenow + 1000) {}
 //timenow = millis(); // 1000ms에 한 번씩 loop가 실행됨.
 /////////////////////////////////////////////////////////////
@@ -157,7 +158,7 @@ a[i]=1-a[i];
 if(a[i] == 1) now1 = i, an1++;
 }
 if(an1 == 2) now1 = 0;
-prt1(); // 상태 출력 함수
+//prt1(); // 상태 출력 함수
 if(now1 != previous1)
 {
 digitalWrite(Start_Stop_1, 0), delay(50), digitalWrite(Start_Stop_1, 1); // Stop 했다가 다시 Start
@@ -191,5 +192,3 @@ start_time_moter2=millis();
 previous2 = now2;
 f(now1, now2);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
